@@ -56,4 +56,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation("androidx.navigation:navigation-compose:2.8.5")
+    // Retrofit pour les requêtes réseau
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+// Gson pour convertir le JSON de l'API en objets Kotlin
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+// Coil pour afficher les images des cocktails depuis internet
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

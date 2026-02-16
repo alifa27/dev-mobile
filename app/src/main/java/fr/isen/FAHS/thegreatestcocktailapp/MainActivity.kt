@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,29 +20,31 @@ class MainActivity : ComponentActivity() {
         setContent {
             TheGreatestCocktailAppTheme {
                 Surface(
-                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // LE CODE DE NAVIGATION VA ICI
                     val navController = rememberNavController()
 
                     NavHost(navController = navController, startDestination = "categories") {
+                        // Écran des catégories (récupère les données de l'API)
                         composable("categories") {
                             CategoriesScreen(onCategoryClick = { category ->
                                 navController.navigate("drinks/$category")
                             })
                         }
-                        composable("drinks/{category}") { backStackEntry ->
+
+                        // Écran de la liste des boissons par catégorie
+                        composable(
+                            "drinks/{category}",
+                            arguments = listOf(navArgument("category") { type = NavType.StringType })
+                        ) { backStackEntry ->
                             val categoryName = backStackEntry.arguments?.getString("category") ?: ""
-                            Text(text = "Liste des boissons pour : $categoryName")
-                        }
-                        composable("detail") {
-                            DetailCocktailScreen()
+                            // On appelle l'écran des boissons (Code à créer juste après)
+                            DrinksListScreen(categoryName)
                         }
                     }
                 }
             }
         }
-
     }
 }
