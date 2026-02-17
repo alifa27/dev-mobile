@@ -1,5 +1,6 @@
 package fr.isen.FAHS.thegreatestcocktailapp
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,15 +9,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage // Coil pour charger les photos depuis le web
+import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 
-@Composable
-fun DrinksListScreen(categoryName: String) {
-    // État pour stocker la liste des boissons de la catégorie
+@Composable // UNE SEULE FOIS ICI
+fun DrinksListScreen(categoryName: String, navController: NavHostController) {
     var drinks by remember { mutableStateOf<List<DrinkModel>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
-    // On lance l'appel API dès que l'écran s'affiche pour cette catégorie
     LaunchedEffect(categoryName) {
         try {
             val response = NetworkManager.apiService.getDrinksByCategory(categoryName)
@@ -44,11 +44,13 @@ fun DrinksListScreen(categoryName: String) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 4.dp),
+                            .padding(vertical = 4.dp)
+                            .clickable {
+                                navController.navigate("detail/${drink.idDrink}")
+                            },
                         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            // Affichage de l'image du cocktail
                             AsyncImage(
                                 model = drink.strDrinkThumb,
                                 contentDescription = drink.strDrink,

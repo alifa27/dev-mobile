@@ -26,21 +26,31 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
 
                     NavHost(navController = navController, startDestination = "categories") {
-                        // Écran des catégories (récupère les données de l'API)
+
+                        // 1. Écran des Catégories (L'accueil)
                         composable("categories") {
                             CategoriesScreen(onCategoryClick = { category ->
                                 navController.navigate("drinks/$category")
                             })
                         }
 
-                        // Écran de la liste des boissons par catégorie
+                        // 2. Écran de la Liste des Boissons (Appelé une seule fois)
                         composable(
                             "drinks/{category}",
                             arguments = listOf(navArgument("category") { type = NavType.StringType })
                         ) { backStackEntry ->
                             val categoryName = backStackEntry.arguments?.getString("category") ?: ""
-                            // On appelle l'écran des boissons (Code à créer juste après)
-                            DrinksListScreen(categoryName)
+                            // On passe les deux arguments attendus par ta fonction
+                            DrinksListScreen(categoryName = categoryName, navController = navController)
+                        }
+
+                        // 3. Écran de Détail d'un Cocktail
+                        composable(
+                            "detail/{drinkId}",
+                            arguments = listOf(navArgument("drinkId") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val drinkId = backStackEntry.arguments?.getString("drinkId") ?: ""
+                            DetailCocktailScreen(drinkId = drinkId)
                         }
                     }
                 }
