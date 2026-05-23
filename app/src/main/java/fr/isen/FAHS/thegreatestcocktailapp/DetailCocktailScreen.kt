@@ -34,7 +34,7 @@ fun DetailCocktailScreen(drinkId: String) {
         isFavorite = FavoritesManager.getFavorites(context).contains(drinkId)
         try {
             val response = NetworkManager.apiService.getDrinkDetails(drinkId)
-            drink = response.drinks.firstOrNull()
+            drink = response.drinks?.firstOrNull()
         } catch (e: Exception) {
             e.printStackTrace()
         }

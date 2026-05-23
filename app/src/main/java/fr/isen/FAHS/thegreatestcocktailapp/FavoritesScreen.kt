@@ -35,7 +35,7 @@ fun FavoritesScreen(navController: NavHostController) {
         try {
             for (id in favoriteIds) {
                 val response = NetworkManager.apiService.getDrinkDetails(id)
-                response.drinks.firstOrNull()?.let { tempDrinks.add(it) }
+                response.drinks?.firstOrNull()?.let { tempDrinks.add(it) }
             }
             favoriteDrinks = tempDrinks
         } catch (e: Exception) {

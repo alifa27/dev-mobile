@@ -27,4 +27,5 @@ data class DrinkModel(
     }
 }
 
-data class DrinkResponse(val drinks: List<DrinkModel>)
+// 🚨 CORRECTION ICI : Ajout du "?" pour autoriser une liste nulle (évite le crash)
+data class DrinkResponse(val drinks: List<DrinkModel>?)

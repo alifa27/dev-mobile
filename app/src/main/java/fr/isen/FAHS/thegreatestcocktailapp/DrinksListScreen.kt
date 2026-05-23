@@ -8,28 +8,36 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 
-@Composable // UNE SEULE FOIS ICI
+@Composable
 fun DrinksListScreen(categoryName: String, navController: NavHostController) {
     var drinks by remember { mutableStateOf<List<DrinkModel>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
 
-    LaunchedEffect(categoryName) {
+    // 🚨 CORRECTION ICI : Décodage du nom de la catégorie
+    val decodedCategoryName = remember(categoryName) {
+        android.net.Uri.decode(categoryName)
+    }
+
+    LaunchedEffect(decodedCategoryName) {
         try {
-            val response = NetworkManager.apiService.getDrinksByCategory(categoryName)
-            drinks = response.drinks
-            isLoading = false
+            val response = NetworkManager.apiService.getDrinksByCategory(decodedCategoryName)
+            // 🚨 CORRECTION ICI : Si response.drinks est null, on renvoie une liste vide au lieu de crasher
+            drinks = response.drinks ?: emptyList()
         } catch (e: Exception) {
+            drinks = emptyList() // En cas d'erreur réseau
+        } finally {
             isLoading = false
         }
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text(
-            text = categoryName,
+            text = decodedCategoryName,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -37,6 +45,11 @@ fun DrinksListScreen(categoryName: String, navController: NavHostController) {
         if (isLoading) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
+            }
+        } else if (drinks.isEmpty()) {
+            // 🚨 CORRECTION UI : Message si la catégorie ne contient aucun cocktail
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Aucun cocktail trouvé dans cette catégorie.", color = Color.Gray)
             }
         } else {
             LazyColumn {
