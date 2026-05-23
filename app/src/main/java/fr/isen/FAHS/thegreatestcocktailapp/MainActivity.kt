@@ -132,7 +132,7 @@ fun MainScreen() {
             composable(Screen.Random.route) {
                 RandomDrinkScreen()
             }
-
+//hey
             // Écrans de navigation interne (Détails et Listes)
             composable(
                 "drinks/{category}",
